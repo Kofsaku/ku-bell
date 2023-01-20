@@ -89,7 +89,9 @@
   </span>
 
   <div class="product__media media media--transparent gradient global-media-settings" style="padding-top: {{ 1 | divided_by: media.preview_image.aspect_ratio | times: 100 }}%;">
-    <img
+
+
+    <img class="{% if lazy_load == false %}removelazyload{% else %}lazyload{% endif %}"
       srcset="{% if media.preview_image.width >= 493 %}{{ media.preview_image | image_url: width: 493 }} 493w,{% endif %}
         {% if media.preview_image.width >= 600 %}{{ media.preview_image | image_url: width: 600 }} 600w,{% endif %}
         {% if media.preview_image.width >= 713 %}{{ media.preview_image | image_url: width: 713 }} 713w,{% endif %}
@@ -102,13 +104,18 @@
         {% if media.preview_image.width >= 1646 %}{{ media.preview_image | image_url: width: 1646 }} 1646w,{% endif %}
         {% if media.preview_image.width >= 1946 %}{{ media.preview_image | image_url: width: 1946 }} 1946w,{% endif %}
         {{ media.preview_image | image_url }} {{ media.preview_image.width }}w"
-      src="{{ media | image_url: width: 1946 }}"
+      {% if lazy_load == false %}
+      src="{{ media | img_url: '800x' }}"
+      {% else %}
+      src="{{ media | img_url: '1x1' }}"
+      loading="lazy"
+      {% endif %}
       sizes="(min-width: {{ settings.page_width }}px) {{ settings.page_width | minus: 100 | times: media_width | round }}px, (min-width: 990px) calc({{ media_width | times: 100 }}vw - 10rem), (min-width: 750px) calc((100vw - 11.5rem) / 2), calc(100vw - 4rem)"
-      {% unless lazy_load == false %}loading="lazy"{% endunless %}
       width="973"
       height="{{ 973 | divided_by: media.preview_image.aspect_ratio | ceil }}"
-      alt="{{ media.preview_image.alt | escape }}"
-    >
+      alt="{{ media.preview_image.alt | escape }}">
+
+
   </div>
   <button class="product__media-toggle quick-add-hidden" type="button" aria-haspopup="dialog" data-media-id="{{ media.id }}">
     <span class="visually-hidden">
